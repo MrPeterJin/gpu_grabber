@@ -12,13 +12,15 @@ SSH_KEY="your_ssh_key"
 # set your email address
 EMAIL_ADDRESS="your_email_address"
 
-# Set the path to your Python scripts
+# set the path to your Python scripts
 python_scripts=(
     "/path/to/train1.py"
     "/path/to/train2.py"
     "/path/to/train3.py"
 )
 
+# set your environment
+rc_path="your_rc_path"
 conda_env="your_conda_env_name"
 
 # Variable to check GPU availability
@@ -30,16 +32,22 @@ function send_email {
     echo "GPU available for use!" | mail -s "GPU Available" $EMAIL_ADDRESS
 }
 
+# Check if any lockfile exists
+if [ -e /tmp/cron_lockfile.txt ]; then 
+    rm /tmp/cron_lockfile.txt; 
+fi
+
 # Check if any GPUs are available
 if [[ $gpu_status == *"No running processes found"* ]]; then
-    echo "[log] $current_time GPU available! Sending email notification..." > gpu_grabber.log
+    echo "[log] $current_time GPU available! Sending email notification..." > /tmp/gpu_grabber.log
     send_email
+    echo "lockfile placeholder" > /tmp/cron_lockfile.txt # prevent other cron jobs from running
     for scripts in "${python_scripts[@]}"; do
-        echo "[log] $current_time Running $scripts..." > gpu_grabber.log
-        ssh -i $SSH_KEY -p $SSH_PORT $SSH_USER@$SSH_HOST "conda activate $conda_env && python $scripts" &
+        echo "[log] $current_time Running $scripts..." > /tmp/gpu_grabber.log
+        ssh -i $SSH_KEY -p $SSH_PORT $SSH_USER@$SSH_HOST "source $rc_path && conda activate $conda_env && python $scripts" &
     done
 else
-    echo "[log] $current_time No GPUs currently available. :(" > gpu_grabber.log
+    echo "[log] $current_time No GPUs currently available. :(" > /tmp/gpu_grabber.log
 fi
 
 
