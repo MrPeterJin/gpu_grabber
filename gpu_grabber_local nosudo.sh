@@ -39,6 +39,7 @@ if [[ $gpu_status == *"No running processes found"* ]]; then
         echo "[log] $current_time Running $scripts..." > /tmp/gpu_grabber.log
         ssh -i $SSH_KEY -p $SSH_PORT $SSH_USER@$SSH_HOST "source $rc_path && conda activate $conda_env && python $scripts" &
     done
+    rm /tmp/cron_lockfile.txt # script finished, remove lockfile
 else
     echo "[log] $current_time No GPUs currently available. :(" > /tmp/gpu_grabber.log
 fi
