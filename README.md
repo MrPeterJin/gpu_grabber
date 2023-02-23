@@ -17,7 +17,7 @@ Tired of having to manually check for GPU availability while conducting a machin
     # set your email address
     EMAIL_ADDRESS="your_email_address"
 
-    # Set the path to your Python scripts
+    # set the path to your Python scripts
     python_scripts=(
         "/path/to/train1.py"
         "/path/to/train2.py"
@@ -43,7 +43,7 @@ Tired of having to manually check for GPU availability while conducting a machin
    4.1 Run `crontab -e` to edit your `crontab` file.      
    4.2 Add the following line to the file.    
    ```bash
-    * * * * * /path/to/gpu_grabber.sh # This would run the script every minute
+    * * * * * /path/to/gpu_grabber.sh # this would run the script every minute
     ```
    For more information on `crontab`, please refer to [this](https://www.cyberciti.biz/faq/how-do-i-add-jobs-to-cron-under-linux-or-unix-oses/).
 
