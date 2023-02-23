@@ -15,9 +15,6 @@ REQ_MEM=0 # memory requested in MB per GPU
 REQ_UTIL=0 # GPU utilization upperbound
 REQ_PROC=0 # number of processes per GPU upperbound
 
-# set your email address
-EMAIL_ADDRESS="your_email_address"
-
 # set your environment
 rc_path="your_rc_path"
 conda_env="your_conda_env_name"
@@ -40,11 +37,6 @@ if [ -z "$gpu_ids" ]; then
     gpu_availability=0
 fi
 
-# Function to send email notification
-function send_email {
-    echo "GPU $gpu_ids is/are available for use!" | mail -s "GPU Available" $EMAIL_ADDRESS
-}
-
 # Check if any lockfile exists
 if [ -e /tmp/cron_lockfile.txt ]; then 
     rm /tmp/cron_lockfile.txt; 
@@ -52,12 +44,11 @@ fi
 
 # Check if any GPUs are available
 if [ $gpu_availability -eq 1 ]; then
-    echo "[log] $current_time GPU $gpu_ids available! Sending email notification..." > /tmp/gpu_grabber.log 
-    send_email
+    echo "[log] $current_time GPU $gpu_ids available! Running scripts..." > /tmp/gpu_grabber.log 
     echo "lockfile placeholder" > /tmp/cron_lockfile.txt # prevent other cron jobs from running
     for scripts in "${python_scripts[@]}"; do
-        echo "[log] $current_time Running $scripts..." 
-        ssh -i $SSH_KEY -p $SSH_PORT $SSH_USER@$SSH_HOST "source $rc_path && conda activate $conda_env && CUDA_VISIBLE_DEVICES=$gpu_ids python $scripts" & > /tmp/gpu_grabber.log
+        echo "[log] $current_time Running $scripts..." > /tmp/cron_lockfile.txt 
+        ssh -i $SSH_KEY -p $SSH_PORT $SSH_USER@$SSH_HOST "source $rc_path && conda activate $conda_env && CUDA_VISIBLE_DEVICES=$gpu_ids python $scripts" &
     done
 else
     echo "[log] $current_time No GPUs currently available. :(" > /tmp/gpu_grabber.log
