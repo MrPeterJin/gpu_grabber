@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # set the current time
-current_time=$(date "+%H:%M:%S")
+current_time=$(date "+%Y-%m-%d,%H:%M:%S")
 
 # set the SSH connection information
 SSH_USER="your_ssh_username"
