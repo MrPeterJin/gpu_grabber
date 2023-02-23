@@ -27,7 +27,7 @@ gpu_status=$(ssh $SSH_USER@$SSH_HOST "nvidia-smi")
 
 # Function to send email notification
 function send_email {
-    echo "GPU available for use!" | mail -s "GPU Available" $email
+    echo "GPU available for use!" | mail -s "GPU Available" $EMAIL_ADDRESS
 }
 
 # Check if any GPUs are available
