@@ -32,14 +32,14 @@ function send_email {
 
 # Check if any GPUs are available
 if [[ $gpu_status == *"No running processes found"* ]]; then
-    echo "[log] $current_time GPU available! Sending email notification..." >> gpu_grabber.log
+    echo "[log] $current_time GPU available! Sending email notification..." > gpu_grabber.log
     send_email
     for scripts in "${python_scripts[@]}"; do
-        echo "[log] $current_time Running $scripts..." >> gpu_grabber.log
+        echo "[log] $current_time Running $scripts..." > gpu_grabber.log
         ssh -i $SSH_KEY -p $SSH_PORT $SSH_USER@$SSH_HOST "conda activate $conda_env && python $scripts" &
     done
 else
-    echo "[log] $current_time No GPUs currently available. :(" >> gpu_grabber.log
+    echo "[log] $current_time No GPUs currently available. :(" > gpu_grabber.log
 fi
 
 
