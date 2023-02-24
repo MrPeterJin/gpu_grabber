@@ -52,16 +52,16 @@ fi
 
 # Check if any GPUs are available
 if [ $gpu_availability -eq 1 ]; then
-    echo "[log] $current_time GPU $gpu_ids available! Sending email notification..." > /tmp/gpu_grabber.log 
+    echo "[log] $current_time GPU $gpu_ids available! Sending email notification..." >> /tmp/gpu_grabber.log 
     send_email
-    echo "lockfile placeholder" > /tmp/cron_lockfile.txt # prevent other cron jobs from running
+    echo "lockfile placeholder" >> /tmp/cron_lockfile.txt # prevent other cron jobs from running
     for scripts in "${python_scripts[@]}"; do
         echo "[log] $current_time Running $scripts..." 
-        ssh -i $SSH_KEY -p $SSH_PORT $SSH_USER@$SSH_HOST "source $rc_path && conda activate $conda_env && CUDA_VISIBLE_DEVICES=$gpu_ids python $scripts" & > /tmp/gpu_grabber.log
+        ssh -i $SSH_KEY -p $SSH_PORT $SSH_USER@$SSH_HOST "source $rc_path && conda activate $conda_env && CUDA_VISIBLE_DEVICES=$gpu_ids python $scripts" & >> /tmp/gpu_grabber.log
     done
     rm /tmp/cron_lockfile.txt # script finished, remove lockfile
 else
-    echo "[log] $current_time No GPUs currently available. :(" > /tmp/gpu_grabber.log
+    echo "[log] $current_time No GPUs currently available. :(" >> /tmp/gpu_grabber.log
 fi
 
 
